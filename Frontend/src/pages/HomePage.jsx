@@ -37,7 +37,7 @@ const HomePage = () => {
 
             {/* Simple Header */}
             <div className="text-blue-600 text-3xl font-bold mb-4">
-              StudyHub
+               ALWEENA KA STUDYHUB
             </div>
 
             {/* Main Content */}
