@@ -37,7 +37,7 @@ const HomePage = () => {
 
             {/* Simple Header */}
             <div className="text-blue-600 text-3xl font-bold mb-4">
-              StudyHub
+              ALWEENA KA STUDYHUB
             </div>
 
             {/* Main Content */}
@@ -50,7 +50,7 @@ const HomePage = () => {
                 <div className="space-y-4">
                   
                   <div>
-                    <div className="text-blue-700 mb-2 text-lg font-bold">📚 NOTES</div>
+                    <div className="text-blue-700 mb-2 text-lg font-bold">📚 Share Notes</div>
                     <div className="ml-4 text-gray-600">
                       <div>Upload your study materials and help classmates learn</div>
                     </div>
