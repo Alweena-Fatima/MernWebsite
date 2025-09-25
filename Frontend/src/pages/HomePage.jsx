@@ -52,7 +52,7 @@ const HomePage = () => {
                   <div>
                     <div className="text-blue-700 mb-2 text-lg font-bold">📚 Share Notes</div>
                     <div className="ml-4 text-gray-600">
-                      <div>Upload your study materials and help classmates learn</div>
+                      <div>Upload study materials and help classmates learn</div>
                     </div>
                   </div>
 
