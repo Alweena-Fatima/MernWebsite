@@ -1,39 +1,43 @@
-import express from 'express';
-import multer from 'multer';
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import express from "express";
+import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../utils/cloudinary.js"; // use centralized config
 
 const router = express.Router();
 
-// Cloudinary config
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-// Storage
+// Cloudinary storage setup
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: 'notes_pdfs',
-    resource_type: 'auto',
-    format: async (req, file) => 'pdf',
-    public_id: (req, file) => file.originalname,
+    folder: "notes_pdfs",
+    resource_type: "auto",
+    public_id: (req, file) => {
+      // remove .pdf from originalname if present
+      const name = file.originalname.replace(/\.pdf$/i, "");
+      return Date.now() + "-" + name;
+    },
   },
 });
+
 
 const upload = multer({ storage });
 
 // Route
-router.post('/', upload.single('file'), (req, res) => {
-  if (!req.file || !req.file.path) {
-    return res.status(400).json({ message: 'Upload failed' });
-  }
+router.post("/", (req, res, next) => {
+  upload.single("file")(req, res, (err) => {
+    if (err) {
+      console.error("Multer/Cloudinary upload error:", err);
+      return res.status(500).json({ message: "Upload failed", error: err.message });
+    }
 
-  res.status(200).json({
-    message: 'Upload successful',
-    fileUrl: req.file.path,
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    res.status(200).json({
+      message: "Upload successful",
+      fileUrl: req.file.path, // Cloudinary URL
+    });
   });
 });
 

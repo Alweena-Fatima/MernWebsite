@@ -28,59 +28,55 @@ const UploadNotesModal = ({ onClose, onSubmit }) => {
   };
 
   const handleSubmit = async () => {
-  if (!title.trim()) {
-    alert("Please enter a title.");
-    return;
-  }
-
-  if (noteType === "pdf") {
-    if (!file) {
-      alert("Please select a PDF file.");
+    if (!title.trim()) {
+      alert("Please enter a title.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file); // Only the file needed for Cloudinary route
+    if (noteType === "pdf") {
+      if (!file) {
+        alert("Please select a PDF file.");
+        return;
+      }
 
-    try {
-      const response = await fetch("http://localhost:5000/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const formData = new FormData();
+      formData.append("file", file); // field name must match backend upload.single("file")
 
-      if (!response.ok) throw new Error("PDF upload failed");
+      try {
+        const response = await fetch("http://localhost:5000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
 
-      const result = await response.json();
+        if (!response.ok) throw new Error("PDF upload failed");
 
-      alert("PDF uploaded successfully!");
+        const result = await response.json();
 
-      // Call the onSubmit prop with file URL from Cloudinary
-      onSubmit({
-        title,
-        description,
-        type: "pdf",
-        fileUrl: result.url, // assuming 'url' or 'secure_url' is returned
-      });
+        alert("PDF uploaded successfully!");
 
-    } catch (error) {
-      console.error(error);
-      alert("Failed to upload PDF.");
+        // Use fileUrl returned from backend
+        onSubmit({
+          title,
+          description,
+          type: "pdf",
+          fileUrl: result.fileUrl, // ✅ fixed: use fileUrl, not url
+        });
+      } catch (error) {
+        console.error("Upload error:", error);
+        alert("Failed to upload PDF.");
+      }
+    } else {
+      // Text note submission
+      if (!textContent.trim()) {
+        alert("Please enter note content.");
+        return;
+      }
+
+      const data = { title, description, type: "text", content: textContent };
+      onSubmit(data);
+      localStorage.removeItem("noteDraft");
     }
-
-  } else {
-    // Text note submission
-    if (!textContent.trim()) {
-      alert("Please enter note content.");
-      return;
-    }
-
-    const data = { title, description, type: "text", content: textContent };
-    onSubmit(data);
-    localStorage.removeItem("noteDraft");
-  }
-};
-
-
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 font-mono">
