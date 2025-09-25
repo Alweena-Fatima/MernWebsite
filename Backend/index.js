@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import userRoutes from './routes/auth.js';
-import uploadRoutes from './routes/upload.js';
 
 dotenv.config();
 
@@ -23,9 +22,7 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/api/upload', uploadRoutes);
 
-app.use('/api/upload/pdf', uploadRoutes);
 // Default route
 app.get('/', (req, res) => {
   res.send('Backend is running!');
